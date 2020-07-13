@@ -1,0 +1,30 @@
+---
+
+- name: configuration
+  hosts: all
+  gather_facts: false # remove later! speeds up testing
+  become: true
+
+  pre_tasks:
+  - name: enable repos
+    template:
+      src: ./open_three-tier-app.repo
+      dest: /etc/yum.repos.d/open_three-tier-app.repo
+      mode: 0644
+
+
+
+- name: setup load-balancer tier
+  hosts: frontends
+  become: true
+  roles:
+    - {name: web_server}
+
+- name: setup ap-server tier
+  hosts: apps 
+  become: true
+  roles:
+    - {name: ap_server}
+
+
+
